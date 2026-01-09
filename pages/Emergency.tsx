@@ -97,14 +97,14 @@ const Emergency: React.FC = () => {
   if (user?.role === Role.ADMIN) {
       return (
         <div className="max-w-4xl mx-auto space-y-8">
-            <div className="bg-slate-900 text-white p-6 rounded-2xl flex justify-between items-center">
+            <div className="bg-white text-slate-900 border border-slate-200 shadow-sm p-6 rounded-2xl flex justify-between items-center">
                 <div>
                     <h1 className="text-2xl font-bold flex items-center gap-3">
                         <Activity className="text-red-500" /> Emergency Monitor
                     </h1>
-                    <p className="text-slate-400">Live feed of incoming SOS requests</p>
+                    <p className="text-slate-500">Live feed of incoming SOS requests</p>
                 </div>
-                <div className="bg-red-600 px-4 py-2 rounded-lg font-bold animate-pulse">
+                <div className="bg-red-100 text-red-700 border border-red-200 px-4 py-2 rounded-lg font-bold animate-pulse">
                     LIVE
                 </div>
             </div>
@@ -236,18 +236,18 @@ const Emergency: React.FC = () => {
                 </div>
             )}
 
-            <div className="bg-slate-900 text-white p-6 rounded-2xl">
+            <div className="bg-white border border-slate-200 shadow-sm text-slate-900 p-6 rounded-2xl">
                 <h3 className="font-bold text-lg mb-4">Emergency Contacts</h3>
                 <div className="space-y-4">
-                    <div className="flex items-center justify-between p-3 bg-slate-800 rounded-lg">
-                        <span className="font-medium">Ambulance / Fire</span>
-                        <a href="tel:911" className="flex items-center gap-2 bg-red-600 px-3 py-1 rounded-full text-sm hover:bg-red-500">
+                    <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100">
+                        <span className="font-medium text-slate-700">Ambulance / Fire</span>
+                        <a href="tel:911" className="flex items-center gap-2 bg-red-600 px-3 py-1 rounded-full text-white text-sm hover:bg-red-500 shadow-sm">
                             <Phone size={14} /> 911
                         </a>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-slate-800 rounded-lg">
-                        <span className="font-medium">National Poison Control</span>
-                        <a href="tel:18002221222" className="flex items-center gap-2 bg-blue-600 px-3 py-1 rounded-full text-sm hover:bg-blue-500">
+                    <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100">
+                        <span className="font-medium text-slate-700">National Poison Control</span>
+                        <a href="tel:18002221222" className="flex items-center gap-2 bg-blue-600 px-3 py-1 rounded-full text-white text-sm hover:bg-blue-500 shadow-sm">
                             <Phone size={14} /> Call
                         </a>
                     </div>

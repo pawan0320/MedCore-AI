@@ -10,13 +10,38 @@ export enum UserStatus {
   BLOCKED = 'BLOCKED'
 }
 
+export interface UserPreferences {
+  emailNotifications: boolean;
+  smsNotifications: boolean;
+  twoFactorEnabled: boolean;
+  darkMode: boolean;
+  language: string;
+}
+
+export interface MedicalProfile {
+  height: string;
+  weight: string;
+  bloodGroup: string;
+  allergies: string[];
+  conditions: string[];
+  medications: string[];
+  emergencyContact: string;
+}
+
 export interface User {
   id: string;
   name: string;
   role: Role;
   email: string;
+  password?: string; // Added for mock auth storage
+  phone?: string;
+  address?: string;
+  gender?: string;
+  dob?: string;
   status: UserStatus;
   avatar?: string;
+  preferences?: UserPreferences;
+  medicalProfile?: MedicalProfile; // Only for Patients
 }
 
 export interface AuthResponse {
@@ -31,6 +56,10 @@ export interface Doctor extends User {
   availableSlots: string[];
   location: string;
   hospital: string;
+  licenseNumber?: string; // Critical for verification
+  consultationFee?: number;
+  bio?: string;
+  verificationStatus?: 'PENDING' | 'VERIFIED' | 'REJECTED';
 }
 
 export interface Appointment {

@@ -2,19 +2,26 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Role } from '../types';
-import { Activity, User, Stethoscope, ArrowRight, Loader2, CheckCircle } from 'lucide-react';
+import { Activity, User, Stethoscope, ArrowRight, Loader2, CheckCircle, Shield } from 'lucide-react';
+import { countryCodes } from '../data/countryCodes';
 
 const Signup: React.FC = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
   const [role, setRole] = useState<Role>(Role.PATIENT);
+  
+  // Form State
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    password: '', // Not used in this demo backend but good for UI
+    password: '',
     specialization: '',
     hospital: '',
+    licenseNumber: '',
   });
+  const [phoneCode, setPhoneCode] = useState('+1');
+  const [phoneNumber, setPhoneNumber] = useState('');
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -27,15 +34,25 @@ const Signup: React.FC = () => {
       await register({
         name: formData.name,
         email: formData.email,
+        password: formData.password,
         role: role,
+        phone: `${phoneCode} ${phoneNumber}`, // Combine code and number
+        // Only include doctor fields if role is doctor
         ...(role === Role.DOCTOR && {
             specialization: formData.specialization,
-            hospital: formData.hospital
+            hospital: formData.hospital,
+            licenseNumber: formData.licenseNumber
         })
       });
-      // AuthContext automatically sets user. 
-      // Redirect handled by App.tsx or we manually push to dashboard
-      navigate('/');
+      
+      // If Doctor, we don't get logged in automatically because of PENDING status
+      if (role === Role.DOCTOR) {
+          alert("Account created successfully! Your account is pending admin approval.");
+          navigate('/login');
+      } else {
+          // Patient gets logged in automatically via context update in register
+          navigate('/ai-assistant');
+      }
     } catch (err: any) {
       setError(err.message || 'Registration failed');
     } finally {
@@ -112,9 +129,61 @@ const Signup: React.FC = () => {
                   />
                </div>
 
+               <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Phone Number</label>
+                  <div className="flex gap-2">
+                    <select
+                      value={phoneCode}
+                      onChange={(e) => setPhoneCode(e.target.value)}
+                      className="w-32 px-2 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white text-sm"
+                    >
+                      {countryCodes.map((country) => (
+                        <option key={country.code} value={country.dial_code}>
+                          {country.code} ({country.dial_code})
+                        </option>
+                      ))}
+                    </select>
+                    <input
+                      type="tel"
+                      required
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      className="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                      placeholder="123 456 7890"
+                    />
+                  </div>
+               </div>
+               
+               <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
+                  <input
+                    type="password"
+                    required
+                    value={formData.password}
+                    onChange={(e) => setFormData({...formData, password: e.target.value})}
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    placeholder="••••••••"
+                  />
+               </div>
+
                {/* Doctor Specific Fields */}
                {role === Role.DOCTOR && (
                    <div className="space-y-5 pt-2 animate-in fade-in slide-in-from-top-4">
+                       <div>
+                          <label className="block text-sm font-medium text-slate-700 mb-1">Medical License Number</label>
+                          <div className="relative">
+                              <Shield className="absolute left-3 top-3 text-emerald-500" size={16} />
+                              <input
+                                type="text"
+                                required
+                                value={formData.licenseNumber}
+                                onChange={(e) => setFormData({...formData, licenseNumber: e.target.value})}
+                                className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
+                                placeholder="MD-12345-US"
+                              />
+                          </div>
+                       </div>
+
                        <div>
                           <label className="block text-sm font-medium text-slate-700 mb-1">Specialization</label>
                           <select 
@@ -129,6 +198,7 @@ const Signup: React.FC = () => {
                              <option value="General Practitioner">General Practitioner</option>
                              <option value="Pediatrician">Pediatrician</option>
                              <option value="Neurologist">Neurologist</option>
+                             <option value="Orthopedic">Orthopedic</option>
                           </select>
                        </div>
                        <div>
@@ -145,7 +215,7 @@ const Signup: React.FC = () => {
                        
                        <div className="bg-amber-50 p-4 rounded-lg border border-amber-200 text-sm text-amber-800 flex gap-3">
                           <CheckCircle className="shrink-0" size={18} />
-                          <p>Doctor accounts require Admin approval. You will have restricted access until verified.</p>
+                          <p>Doctor accounts require Admin verification. You will not be able to login until your license is verified.</p>
                        </div>
                    </div>
                )}

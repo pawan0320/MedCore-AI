@@ -6,10 +6,11 @@ interface AuthContextType {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
-  login: (email: string) => Promise<void>;
+  login: (email: string, password?: string) => Promise<void>;
   register: (data: any) => Promise<void>;
   logout: () => void;
   updateUserStatus: (userId: string, status: UserStatus) => Promise<void>;
+  updateUserContext: (updates: Partial<User>) => Promise<void>;
   isLoading: boolean;
 }
 
@@ -37,10 +38,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     loadUserFromStorage();
   }, []);
 
-  const login = async (email: string) => {
+  const login = async (email: string, password?: string) => {
     setIsLoading(true);
     try {
-      const response: AuthResponse = await authService.login(email);
+      const response: AuthResponse = await authService.login(email, password);
       handleAuthSuccess(response);
     } catch (error) {
       throw error;
@@ -53,11 +54,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
     try {
       const response: AuthResponse = await authService.register(data);
-      handleAuthSuccess(response);
+      if (response.token) {
+        handleAuthSuccess(response);
+      }
     } catch (error) {
       throw error;
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const updateUserContext = async (updates: Partial<User>) => {
+    if (!user) return;
+    try {
+      const updatedUser = await authService.updateUserProfile(user.id, updates);
+      setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+    } catch (e) {
+      console.error(e);
+      throw e;
     }
   };
 
@@ -88,6 +103,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       register,
       logout,
       updateUserStatus,
+      updateUserContext,
       isLoading 
     }}>
       {children}

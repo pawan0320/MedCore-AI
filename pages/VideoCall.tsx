@@ -50,32 +50,32 @@ const VideoCall: React.FC = () => {
   if (!appointment) return <div className="p-8">Invalid Appointment Session</div>;
 
   return (
-    <div className="h-[calc(100vh-8rem)] flex bg-slate-900 rounded-2xl overflow-hidden shadow-2xl relative">
+    <div className="h-[calc(100vh-8rem)] flex bg-white rounded-2xl overflow-hidden shadow-xl border border-slate-200 relative">
       
       {/* Main Video Area */}
       <div className={`flex-1 relative flex flex-col ${showChat ? 'hidden md:flex' : 'flex'}`}>
         
         {/* Remote Stream (Doctor/Patient) */}
-        <div className="flex-1 bg-slate-800 flex items-center justify-center relative">
+        <div className="flex-1 bg-slate-50 flex items-center justify-center relative">
            {/* Placeholder for Remote Stream */}
            <div className="text-center">
-               <div className="w-24 h-24 bg-slate-700 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl font-bold text-slate-400">
+               <div className="w-24 h-24 bg-white border border-slate-200 shadow-sm rounded-full mx-auto mb-4 flex items-center justify-center text-3xl font-bold text-slate-400">
                    {appointment.doctorName.charAt(0)}
                </div>
-               <h3 className="text-white text-xl font-semibold">
+               <h3 className="text-slate-900 text-xl font-semibold">
                    {user?.role === 'PATIENT' ? appointment.doctorName : appointment.patientName}
                </h3>
-               <p className="text-slate-400 animate-pulse">Connecting secure video stream...</p>
+               <p className="text-slate-500 animate-pulse">Connecting secure video stream...</p>
            </div>
 
            {/* Local Stream (PIP) */}
-           <div className="absolute bottom-4 right-4 w-48 h-36 bg-black rounded-lg border-2 border-slate-700 overflow-hidden shadow-lg z-10">
+           <div className="absolute bottom-4 right-4 w-48 h-36 bg-white rounded-lg border-2 border-slate-200 overflow-hidden shadow-lg z-10">
                {cameraOn ? (
-                   <div className="w-full h-full bg-slate-900 flex items-center justify-center">
-                       <span className="text-xs text-slate-500">Local Camera</span>
+                   <div className="w-full h-full bg-slate-100 flex items-center justify-center">
+                       <span className="text-xs text-slate-400">Local Camera</span>
                    </div>
                ) : (
-                   <div className="w-full h-full flex items-center justify-center bg-slate-800 text-slate-500">
+                   <div className="w-full h-full flex items-center justify-center bg-slate-50 text-slate-400">
                        <VideoOff size={24} />
                    </div>
                )}
@@ -83,36 +83,36 @@ const VideoCall: React.FC = () => {
         </div>
 
         {/* Controls Bar */}
-        <div className="bg-slate-900 p-4 flex justify-center items-center gap-6">
+        <div className="bg-white p-4 flex justify-center items-center gap-6 border-t border-slate-100">
             <button 
               onClick={() => setMicOn(!micOn)} 
-              className={`p-4 rounded-full ${micOn ? 'bg-slate-700 hover:bg-slate-600 text-white' : 'bg-red-500 text-white'}`}
+              className={`p-4 rounded-full shadow-sm border border-slate-200 ${micOn ? 'bg-white hover:bg-slate-50 text-slate-700' : 'bg-red-50 text-red-600 border-red-100'}`}
             >
                 {micOn ? <Mic /> : <MicOff />}
             </button>
             <button 
               onClick={() => setCameraOn(!cameraOn)} 
-              className={`p-4 rounded-full ${cameraOn ? 'bg-slate-700 hover:bg-slate-600 text-white' : 'bg-red-500 text-white'}`}
+              className={`p-4 rounded-full shadow-sm border border-slate-200 ${cameraOn ? 'bg-white hover:bg-slate-50 text-slate-700' : 'bg-red-50 text-red-600 border-red-100'}`}
             >
                 {cameraOn ? <Video /> : <VideoOff />}
             </button>
             
             <button 
               onClick={endCall} 
-              className="p-4 rounded-full bg-red-600 hover:bg-red-700 text-white px-8 font-bold flex items-center gap-2"
+              className="p-4 rounded-full bg-red-600 hover:bg-red-700 text-white px-8 font-bold flex items-center gap-2 shadow-lg shadow-red-200"
             >
                 <PhoneOff /> End Call
             </button>
 
             <button 
               onClick={() => setShowChat(!showChat)} 
-              className={`p-4 rounded-full md:hidden ${showChat ? 'bg-blue-600 text-white' : 'bg-slate-700 text-white'}`}
+              className={`p-4 rounded-full md:hidden shadow-sm border border-slate-200 ${showChat ? 'bg-blue-600 text-white' : 'bg-white text-slate-700'}`}
             >
                 <MessageSquare />
             </button>
         </div>
 
-        <div className="absolute top-4 left-4 bg-black/50 px-3 py-1 rounded text-white text-sm font-mono flex items-center gap-2">
+        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur border border-slate-200 px-3 py-1 rounded text-slate-800 text-sm font-mono flex items-center gap-2 shadow-sm">
             <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
             {formatTime(duration)}
         </div>
@@ -143,10 +143,10 @@ const VideoCall: React.FC = () => {
 
           <div className="p-4 border-t border-slate-200">
              <div className="flex gap-2 mb-2">
-                 <button className="flex-1 py-2 bg-slate-100 text-slate-600 rounded text-xs font-medium hover:bg-slate-200 flex justify-center items-center gap-1">
+                 <button className="flex-1 py-2 bg-slate-50 border border-slate-200 text-slate-600 rounded text-xs font-medium hover:bg-slate-100 flex justify-center items-center gap-1">
                      <FileText size={14} /> Share Report
                  </button>
-                 <button className="flex-1 py-2 bg-slate-100 text-slate-600 rounded text-xs font-medium hover:bg-slate-200 flex justify-center items-center gap-1">
+                 <button className="flex-1 py-2 bg-slate-50 border border-slate-200 text-slate-600 rounded text-xs font-medium hover:bg-slate-100 flex justify-center items-center gap-1">
                     <Share2 size={14} /> Prescribe
                  </button>
              </div>

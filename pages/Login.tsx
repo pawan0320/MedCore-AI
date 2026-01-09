@@ -1,34 +1,57 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Activity, Lock, Mail, ArrowRight, Loader2 } from 'lucide-react';
+import { Activity, Lock, Mail, ArrowRight, Loader2, AlertTriangle } from 'lucide-react';
+import { Role } from '../types';
 
 const Login: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // For Demo purposes, pre-fill logic could be here, but we will keep it clean
-  
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) {
-      setError('Please enter your email address');
+    const cleanEmail = email.trim();
+    
+    if (!cleanEmail || !password) {
+      setError('Please enter both email and password.');
       return;
     }
     
     setError('');
     setLoading(true);
     try {
-      await login(email);
-      navigate('/');
+      // Pass password to auth service
+      await login(cleanEmail, password);
+      
+      // Role-Based Redirection logic is handled by looking at the user *after* login
+      // But since `login` is async and updates context, we can check the returned user in a real app.
+      // Here we rely on the component re-rendering or manual navigation if AuthContext provided the user back.
+      // For simplicity in this structure, we manually fetch user role from local storage or wait for context.
+      // However, the best UX is to navigate based on the assumed success.
+      
+      // We'll read the user directly from storage since context updates might be slightly async
+      const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+      if (storedUser.role === Role.DOCTOR || storedUser.role === Role.ADMIN) {
+        navigate('/dashboard');
+      } else {
+        navigate('/ai-assistant');
+      }
+
     } catch (err: any) {
-      setError(err.message || 'Login failed. Try "patient@medicore.com"');
+      setError(err.message || 'Login failed. Please check your credentials.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const fillCredentials = (demoEmail: string) => {
+      setEmail(demoEmail);
+      setPassword('password123'); // Demo password
+      setError('');
   };
 
   return (
@@ -64,13 +87,14 @@ const Login: React.FC = () => {
         <div className="w-full max-w-md space-y-8">
           <div className="text-center md:text-left">
             <h2 className="text-3xl font-bold text-slate-900">Welcome back</h2>
-            <p className="mt-2 text-slate-500">Please enter your details to sign in.</p>
+            <p className="mt-2 text-slate-500">Please enter your secure credentials.</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
             {error && (
-              <div className="p-4 bg-red-50 text-red-600 text-sm rounded-lg border border-red-100 flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
-                <AlertCircleIcon /> {error}
+              <div className={`p-4 rounded-lg text-sm flex items-start gap-3 animate-in fade-in slide-in-from-top-2 ${error.includes('Pending') ? 'bg-amber-50 text-amber-800 border border-amber-200' : 'bg-red-50 text-red-600 border border-red-100'}`}>
+                {error.includes('Pending') ? <AlertTriangle className="shrink-0" size={18} /> : <AlertCircleIcon />}
+                <span>{error}</span>
               </div>
             )}
 
@@ -92,9 +116,21 @@ const Login: React.FC = () => {
                   </div>
                </div>
                
-               {/* Password field hidden for demo simplicity based on Auth Service, but usually goes here */}
-               <div className="text-xs text-slate-400 italic">
-                  * Password authentication disabled for this demo. Just enter email.
+               <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Lock className="h-5 w-5 text-slate-400" />
+                    </div>
+                    <input
+                      type="password"
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                      placeholder="••••••••"
+                    />
+                  </div>
                </div>
             </div>
 
@@ -119,9 +155,9 @@ const Login: React.FC = () => {
           <div className="mt-8 border-t border-slate-100 pt-6">
              <p className="text-xs text-center text-slate-400 mb-4 uppercase tracking-widest">Demo Credentials</p>
              <div className="flex flex-wrap justify-center gap-2">
-                <button onClick={() => setEmail('patient@medicore.com')} className="text-xs bg-slate-50 hover:bg-slate-100 px-3 py-1 rounded-full text-slate-600 border border-slate-200">Patient</button>
-                <button onClick={() => setEmail('doctor@medicore.com')} className="text-xs bg-slate-50 hover:bg-slate-100 px-3 py-1 rounded-full text-slate-600 border border-slate-200">Doctor</button>
-                <button onClick={() => setEmail('admin@medicore.com')} className="text-xs bg-slate-50 hover:bg-slate-100 px-3 py-1 rounded-full text-slate-600 border border-slate-200">Admin</button>
+                <button type="button" onClick={() => fillCredentials('patient@medicore.com')} className="text-xs bg-slate-50 hover:bg-slate-100 px-3 py-1 rounded-full text-slate-600 border border-slate-200 transition-colors">Patient</button>
+                <button type="button" onClick={() => fillCredentials('doctor@medicore.com')} className="text-xs bg-slate-50 hover:bg-slate-100 px-3 py-1 rounded-full text-slate-600 border border-slate-200 transition-colors">Doctor</button>
+                <button type="button" onClick={() => fillCredentials('admin@medicore.com')} className="text-xs bg-slate-50 hover:bg-slate-100 px-3 py-1 rounded-full text-slate-600 border border-slate-200 transition-colors">Admin</button>
              </div>
           </div>
         </div>

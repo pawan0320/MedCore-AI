@@ -12,6 +12,7 @@ import Signup from './pages/Signup';
 import Unauthorized from './pages/Unauthorized';
 import VideoCall from './pages/VideoCall';
 import MedicalRecords from './pages/MedicalRecords';
+import ProfileSettings from './pages/ProfileSettings';
 import { Role } from './types';
 import { useAuth } from './context/AuthContext';
 
@@ -32,6 +33,7 @@ const AppLayout: React.FC = () => {
            <Route path="/booking" element={<Booking />} />
            <Route path="/video-call/:id" element={<VideoCall />} />
            <Route path="/records" element={<MedicalRecords />} />
+           <Route path="/profile" element={<ProfileSettings />} />
         </Route>
 
         <Route element={<ProtectedRoute allowedRoles={[Role.DOCTOR, Role.ADMIN]} />}>
