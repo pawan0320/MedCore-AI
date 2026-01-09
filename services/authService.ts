@@ -224,6 +224,10 @@ export const updateUserProfile = async (userId: string, updates: Partial<User>):
   return updatedUser;
 };
 
+export const getAllUsers = async (): Promise<User[]> => {
+    return getUsers();
+};
+
 export const getPendingDoctors = async (): Promise<User[]> => {
   const users = getUsers();
   return users.filter(u => u.role === Role.DOCTOR && u.status === UserStatus.PENDING);

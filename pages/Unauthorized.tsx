@@ -7,7 +7,7 @@ const Unauthorized: React.FC = () => {
 
   return (
     <div className="h-[80vh] flex flex-col items-center justify-center text-center p-4">
-      <div className="bg-slate-100 p-6 rounded-full mb-6">
+      <div className="bg-white border border-slate-200 p-6 rounded-full mb-6 shadow-sm">
         <Lock className="w-12 h-12 text-slate-400" />
       </div>
       <h1 className="text-3xl font-bold text-slate-900 mb-2">Access Denied</h1>

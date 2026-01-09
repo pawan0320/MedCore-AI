@@ -27,19 +27,8 @@ const Login: React.FC = () => {
       // Pass password to auth service
       await login(cleanEmail, password);
       
-      // Role-Based Redirection logic is handled by looking at the user *after* login
-      // But since `login` is async and updates context, we can check the returned user in a real app.
-      // Here we rely on the component re-rendering or manual navigation if AuthContext provided the user back.
-      // For simplicity in this structure, we manually fetch user role from local storage or wait for context.
-      // However, the best UX is to navigate based on the assumed success.
-      
-      // We'll read the user directly from storage since context updates might be slightly async
-      const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
-      if (storedUser.role === Role.DOCTOR || storedUser.role === Role.ADMIN) {
-        navigate('/dashboard');
-      } else {
-        navigate('/ai-assistant');
-      }
+      // All active users go to Dashboard now
+      navigate('/dashboard');
 
     } catch (err: any) {
       setError(err.message || 'Login failed. Please check your credentials.');
@@ -92,7 +81,7 @@ const Login: React.FC = () => {
 
           <form onSubmit={handleLogin} className="space-y-6">
             {error && (
-              <div className={`p-4 rounded-lg text-sm flex items-start gap-3 animate-in fade-in slide-in-from-top-2 ${error.includes('Pending') ? 'bg-amber-50 text-amber-800 border border-amber-200' : 'bg-red-50 text-red-600 border border-red-100'}`}>
+              <div className={`p-4 rounded-lg text-sm flex items-start gap-3 animate-in fade-in slide-in-from-top-2 bg-white border ${error.includes('Pending') ? 'text-amber-800 border-amber-200' : 'text-red-600 border-red-100'}`}>
                 {error.includes('Pending') ? <AlertTriangle className="shrink-0" size={18} /> : <AlertCircleIcon />}
                 <span>{error}</span>
               </div>
@@ -110,7 +99,7 @@ const Login: React.FC = () => {
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                      className="block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white"
                       placeholder="name@company.com"
                     />
                   </div>
@@ -127,7 +116,7 @@ const Login: React.FC = () => {
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                      className="block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white"
                       placeholder="••••••••"
                     />
                   </div>
@@ -155,9 +144,9 @@ const Login: React.FC = () => {
           <div className="mt-8 border-t border-slate-100 pt-6">
              <p className="text-xs text-center text-slate-400 mb-4 uppercase tracking-widest">Demo Credentials</p>
              <div className="flex flex-wrap justify-center gap-2">
-                <button type="button" onClick={() => fillCredentials('patient@medicore.com')} className="text-xs bg-slate-50 hover:bg-slate-100 px-3 py-1 rounded-full text-slate-600 border border-slate-200 transition-colors">Patient</button>
-                <button type="button" onClick={() => fillCredentials('doctor@medicore.com')} className="text-xs bg-slate-50 hover:bg-slate-100 px-3 py-1 rounded-full text-slate-600 border border-slate-200 transition-colors">Doctor</button>
-                <button type="button" onClick={() => fillCredentials('admin@medicore.com')} className="text-xs bg-slate-50 hover:bg-slate-100 px-3 py-1 rounded-full text-slate-600 border border-slate-200 transition-colors">Admin</button>
+                <button type="button" onClick={() => fillCredentials('patient@medicore.com')} className="text-xs bg-white hover:bg-slate-50 px-3 py-1 rounded-full text-slate-600 border border-slate-200 transition-colors">Patient</button>
+                <button type="button" onClick={() => fillCredentials('doctor@medicore.com')} className="text-xs bg-white hover:bg-slate-50 px-3 py-1 rounded-full text-slate-600 border border-slate-200 transition-colors">Doctor</button>
+                <button type="button" onClick={() => fillCredentials('admin@medicore.com')} className="text-xs bg-white hover:bg-slate-50 px-3 py-1 rounded-full text-slate-600 border border-slate-200 transition-colors">Admin</button>
              </div>
           </div>
         </div>

@@ -22,14 +22,30 @@ interface AIResponseData {
 }
 
 const AIAssistant: React.FC = () => {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
+  // Initialize from sessionStorage or default
+  const [messages, setMessages] = useState<ChatMessage[]>(() => {
+    try {
+      const saved = sessionStorage.getItem('ai_chat_history');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // Rehydrate Dates
+        return parsed.map((m: any) => ({
+          ...m,
+          timestamp: new Date(m.timestamp)
+        }));
+      }
+    } catch (e) {
+      console.warn("Failed to load chat history", e);
+    }
+    
+    return [{
       id: '1',
       role: 'model',
       text: 'Hello, I am your MediCore AI Assistant. Describe your symptoms using voice or text, and I will suggest medications and relevant specialists.',
       timestamp: new Date()
-    }
-  ]);
+    }];
+  });
+
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -43,6 +59,8 @@ const AIAssistant: React.FC = () => {
 
   useEffect(() => {
     scrollToBottom();
+    // Save to sessionStorage on every update
+    sessionStorage.setItem('ai_chat_history', JSON.stringify(messages));
   }, [messages]);
 
   // Voice Input Logic
@@ -113,6 +131,13 @@ const AIAssistant: React.FC = () => {
       setMessages(prev => [...prev, aiMsg]);
     } catch (error) {
       console.error(error);
+      const errorMsg: ChatMessage = {
+        id: Date.now().toString(),
+        role: 'model',
+        text: "I'm having trouble connecting to the service right now. Please try again.",
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorMsg]);
     } finally {
       setIsLoading(false);
     }
@@ -141,19 +166,19 @@ const AIAssistant: React.FC = () => {
       return (
         <div className="space-y-4">
           <div>
-            <span className="font-bold text-slate-900 block mb-1">Analysis:</span>
+            <span className="font-bold text-slate-900 dark:text-white block mb-1">Analysis:</span>
             <p>{data.analysis}</p>
           </div>
 
           {/* Medications */}
           {data.otc_medications && data.otc_medications.length > 0 && (
-             <div className="bg-blue-50 p-3 rounded-lg border border-blue-100">
-                <div className="flex items-center gap-2 font-semibold text-blue-800 mb-2">
+             <div className="bg-white dark:bg-slate-900 p-3 rounded-lg border border-blue-100 dark:border-blue-900/30 shadow-sm">
+                <div className="flex items-center gap-2 font-semibold text-blue-800 dark:text-blue-300 mb-2">
                    <Pill size={16} /> Suggested OTC Relief
                 </div>
                 <div className="flex flex-wrap gap-2">
                    {data.otc_medications.map((med, idx) => (
-                      <span key={idx} className="px-2 py-1 bg-white text-blue-600 text-xs font-medium rounded-full border border-blue-200 shadow-sm">
+                      <span key={idx} className="px-2 py-1 bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-300 text-xs font-medium rounded-full border border-blue-200 dark:border-blue-800 shadow-sm">
                          {med}
                       </span>
                    ))}
@@ -164,19 +189,19 @@ const AIAssistant: React.FC = () => {
 
           {/* Recommended Doctors */}
           <div>
-             <div className="flex items-center gap-2 font-semibold text-emerald-800 mb-2">
+             <div className="flex items-center gap-2 font-semibold text-emerald-800 dark:text-emerald-400 mb-2">
                 <Stethoscope size={16} /> Recommended Specialist: {data.specialist_type}
              </div>
              
              {matchingDoctors.length > 0 ? (
                 <div className="grid gap-2">
                    {matchingDoctors.map(doc => (
-                      <div key={doc.id} className="bg-white p-3 rounded-lg border border-emerald-100 shadow-sm flex items-center justify-between">
+                      <div key={doc.id} className="bg-white dark:bg-slate-900 p-3 rounded-lg border border-emerald-100 dark:border-emerald-900/30 shadow-sm flex items-center justify-between">
                          <div className="flex items-center gap-3">
                             <img src={doc.avatar} alt="doc" className="w-8 h-8 rounded-full" />
                             <div>
-                               <p className="text-xs font-bold text-slate-800">{doc.name}</p>
-                               <p className="text-[10px] text-slate-500">{doc.hospital}</p>
+                               <p className="text-xs font-bold text-slate-800 dark:text-slate-200">{doc.name}</p>
+                               <p className="text-[10px] text-slate-500 dark:text-slate-400">{doc.hospital}</p>
                             </div>
                          </div>
                          <Link to="/booking" className="text-xs bg-emerald-600 text-white px-3 py-1.5 rounded-full hover:bg-emerald-700">
@@ -186,7 +211,7 @@ const AIAssistant: React.FC = () => {
                    ))}
                 </div>
              ) : (
-                <div className="text-sm text-slate-500 italic bg-slate-50 p-2 rounded">
+                <div className="text-sm text-slate-500 dark:text-slate-400 italic bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-2 rounded">
                    No {data.specialist_type}s available in our network immediately.
                 </div>
              )}
@@ -198,7 +223,7 @@ const AIAssistant: React.FC = () => {
                href={`https://www.google.com/maps/search/hospitals+near+me+${data.specialist_type}`}
                target="_blank"
                rel="noopener noreferrer"
-               className="flex items-center justify-center gap-2 w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition-colors"
+               className="flex items-center justify-center gap-2 w-full py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-sm font-medium transition-colors"
              >
                 <MapPin size={16} /> Find Nearby Hospitals & Clinics
              </a>
@@ -212,7 +237,7 @@ const AIAssistant: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full max-h-[85vh] bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200">
+    <div className="flex flex-col h-full max-h-[85vh] bg-white dark:bg-slate-900 rounded-2xl shadow-xl overflow-hidden border border-slate-200 dark:border-slate-800">
       {/* Header */}
       <div className="bg-blue-600 p-4 text-white flex justify-between items-center">
         <div>
@@ -221,10 +246,27 @@ const AIAssistant: React.FC = () => {
           </h2>
           <p className="text-blue-100 text-xs">Powered by Gemini 3 Flash • Not a Human Doctor</p>
         </div>
+        
+        {/* Clear History Button */}
+        <button 
+            onClick={() => {
+                if(confirm("Clear chat history?")) {
+                    setMessages([{
+                      id: Date.now().toString(),
+                      role: 'model',
+                      text: 'Hello, I am your MediCore AI Assistant. How can I help you today?',
+                      timestamp: new Date()
+                    }]);
+                }
+            }} 
+            className="text-xs bg-blue-700 hover:bg-blue-800 px-2 py-1 rounded text-blue-200 transition-colors"
+        >
+            Clear
+        </button>
       </div>
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-6 bg-slate-50">
+      <div className="flex-1 overflow-y-auto p-4 space-y-6 bg-white dark:bg-slate-900">
         {messages.map((msg) => (
           <div
             key={msg.id}
@@ -234,7 +276,7 @@ const AIAssistant: React.FC = () => {
               className={`max-w-[85%] lg:max-w-[70%] rounded-2xl p-4 shadow-sm ${
                 msg.role === 'user'
                   ? 'bg-blue-600 text-white rounded-tr-none'
-                  : 'bg-white text-slate-800 rounded-tl-none border border-slate-100'
+                  : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-tl-none border border-slate-100 dark:border-slate-700'
               }`}
             >
                <div className="flex items-center gap-2 mb-1 opacity-70 text-xs uppercase tracking-wider font-semibold">
@@ -244,7 +286,7 @@ const AIAssistant: React.FC = () => {
               <div className="text-sm leading-relaxed">
                 {renderContent(msg)}
               </div>
-              <div className={`text-xs mt-2 text-right ${msg.role === 'user' ? 'text-blue-200' : 'text-slate-400'}`}>
+              <div className={`text-xs mt-2 text-right ${msg.role === 'user' ? 'text-blue-200' : 'text-slate-400 dark:text-slate-500'}`}>
                 {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </div>
             </div>
@@ -252,9 +294,9 @@ const AIAssistant: React.FC = () => {
         ))}
         {isLoading && (
           <div className="flex justify-start">
-             <div className="bg-white p-4 rounded-2xl rounded-tl-none border border-slate-100 shadow-sm flex items-center gap-2">
+             <div className="bg-white dark:bg-slate-800 p-4 rounded-2xl rounded-tl-none border border-slate-100 dark:border-slate-700 shadow-sm flex items-center gap-2">
                 <Loader2 className="animate-spin text-blue-500 h-4 w-4" />
-                <span className="text-slate-500 text-sm">Analyzing symptoms & Finding specialists...</span>
+                <span className="text-slate-500 dark:text-slate-400 text-sm">Analyzing symptoms & Finding specialists...</span>
              </div>
           </div>
         )}
@@ -262,17 +304,17 @@ const AIAssistant: React.FC = () => {
       </div>
 
       {/* Input Area */}
-      <div className="p-4 bg-white border-t border-slate-100">
+      <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800">
         {selectedFile && (
-            <div className="mb-2 flex items-center gap-2 bg-blue-50 p-2 rounded-lg text-sm text-blue-700 w-fit">
+            <div className="mb-2 flex items-center gap-2 bg-white dark:bg-slate-800 border border-blue-200 dark:border-blue-800 p-2 rounded-lg text-sm text-blue-700 dark:text-blue-400 w-fit">
                 <ImageIcon size={16} />
                 <span className="truncate max-w-xs">{selectedFile.name}</span>
-                <button onClick={() => setSelectedFile(null)} className="ml-2 hover:text-blue-900">×</button>
+                <button onClick={() => setSelectedFile(null)} className="ml-2 hover:text-blue-900 dark:hover:text-blue-200">×</button>
             </div>
         )}
         
         <div className="flex items-end gap-2">
-          <label className="p-3 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-full cursor-pointer transition-colors">
+          <label className="p-3 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-slate-800 rounded-full cursor-pointer transition-colors">
             <input type="file" className="hidden" accept="image/*,.pdf" onChange={handleFileSelect} />
             <Upload size={20} />
           </label>
@@ -282,15 +324,15 @@ const AIAssistant: React.FC = () => {
             className={`p-3 rounded-full cursor-pointer transition-all ${
               isRecording 
               ? 'bg-red-100 text-red-600 animate-pulse' 
-              : 'text-slate-400 hover:text-blue-600 hover:bg-blue-50'
+              : 'text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-slate-800'
             }`}
           >
             {isRecording ? <StopCircle size={20} /> : <Mic size={20} />}
           </button>
 
-          <div className="flex-1 bg-slate-100 rounded-2xl px-4 py-2 focus-within:ring-2 focus-within:ring-blue-500 focus-within:bg-white transition-all">
+          <div className="flex-1 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-2 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">
             <textarea
-              className="w-full bg-transparent border-none outline-none resize-none text-slate-800 placeholder:text-slate-400 max-h-32"
+              className="w-full bg-transparent border-none outline-none resize-none text-slate-800 dark:text-slate-200 placeholder:text-slate-400 max-h-32"
               placeholder={isRecording ? "Listening..." : "Describe symptoms or upload report..."}
               rows={1}
               value={inputText}

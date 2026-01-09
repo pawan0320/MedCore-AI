@@ -104,14 +104,14 @@ const Emergency: React.FC = () => {
                     </h1>
                     <p className="text-slate-500">Live feed of incoming SOS requests</p>
                 </div>
-                <div className="bg-red-100 text-red-700 border border-red-200 px-4 py-2 rounded-lg font-bold animate-pulse">
+                <div className="bg-white text-red-700 border border-red-200 px-4 py-2 rounded-lg font-bold animate-pulse shadow-sm">
                     LIVE
                 </div>
             </div>
 
             <div className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
                 <table className="min-w-full divide-y divide-slate-200">
-                    <thead className="bg-slate-50">
+                    <thead className="bg-white">
                         <tr>
                             <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Severity</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Location</th>
@@ -152,7 +152,7 @@ const Emergency: React.FC = () => {
   // PATIENT VIEW: Request Help
   return (
     <div className="max-w-4xl mx-auto space-y-8">
-      <div className="bg-red-50 border-l-4 border-red-500 p-6 rounded-r-lg">
+      <div className="bg-white border-l-4 border-red-500 p-6 rounded-r-lg shadow-sm border border-slate-100">
         <div className="flex items-center gap-3">
           <AlertTriangle className="h-8 w-8 text-red-600" />
           <h1 className="text-2xl font-bold text-red-700">Emergency Assistance Center</h1>
@@ -193,11 +193,11 @@ const Emergency: React.FC = () => {
                 </div>
                 
                 {location ? (
-                    <div className="flex items-center gap-2 text-sm text-green-600 bg-green-50 p-2 rounded">
+                    <div className="flex items-center gap-2 text-sm text-green-600 bg-white border border-green-200 p-2 rounded">
                         <MapPin size={16} /> Location detected: {location.lat.toFixed(4)}, {location.lng.toFixed(4)}
                     </div>
                 ) : (
-                    <div className="flex items-center gap-2 text-sm text-amber-600 bg-amber-50 p-2 rounded">
+                    <div className="flex items-center gap-2 text-sm text-amber-600 bg-white border border-amber-200 p-2 rounded">
                         <MapPin size={16} /> Locating...
                     </div>
                 )}
@@ -217,10 +217,10 @@ const Emergency: React.FC = () => {
         {/* Status / Advice Panel */}
         <div className="space-y-6">
             {riskLevel && (
-                <div className={`p-6 rounded-2xl border-2 ${
-                    riskLevel === 'HIGH' ? 'bg-red-50 border-red-200' : 
-                    riskLevel === 'MEDIUM' ? 'bg-orange-50 border-orange-200' : 
-                    'bg-blue-50 border-blue-200'
+                <div className={`p-6 rounded-2xl border-2 bg-white ${
+                    riskLevel === 'HIGH' ? 'border-red-200' : 
+                    riskLevel === 'MEDIUM' ? 'border-orange-200' : 
+                    'border-blue-200'
                 }`}>
                     <h3 className="font-bold text-lg mb-2">AI Risk Assessment: {riskLevel}</h3>
                     <p className="text-slate-700 mb-4">{aiAdvice}</p>
@@ -239,13 +239,13 @@ const Emergency: React.FC = () => {
             <div className="bg-white border border-slate-200 shadow-sm text-slate-900 p-6 rounded-2xl">
                 <h3 className="font-bold text-lg mb-4">Emergency Contacts</h3>
                 <div className="space-y-4">
-                    <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100">
+                    <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-slate-100">
                         <span className="font-medium text-slate-700">Ambulance / Fire</span>
                         <a href="tel:911" className="flex items-center gap-2 bg-red-600 px-3 py-1 rounded-full text-white text-sm hover:bg-red-500 shadow-sm">
                             <Phone size={14} /> 911
                         </a>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100">
+                    <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-slate-100">
                         <span className="font-medium text-slate-700">National Poison Control</span>
                         <a href="tel:18002221222" className="flex items-center gap-2 bg-blue-600 px-3 py-1 rounded-full text-white text-sm hover:bg-blue-500 shadow-sm">
                             <Phone size={14} /> Call

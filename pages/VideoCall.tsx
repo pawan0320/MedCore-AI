@@ -56,7 +56,7 @@ const VideoCall: React.FC = () => {
       <div className={`flex-1 relative flex flex-col ${showChat ? 'hidden md:flex' : 'flex'}`}>
         
         {/* Remote Stream (Doctor/Patient) */}
-        <div className="flex-1 bg-slate-50 flex items-center justify-center relative">
+        <div className="flex-1 bg-white flex items-center justify-center relative">
            {/* Placeholder for Remote Stream */}
            <div className="text-center">
                <div className="w-24 h-24 bg-white border border-slate-200 shadow-sm rounded-full mx-auto mb-4 flex items-center justify-center text-3xl font-bold text-slate-400">
@@ -71,11 +71,11 @@ const VideoCall: React.FC = () => {
            {/* Local Stream (PIP) */}
            <div className="absolute bottom-4 right-4 w-48 h-36 bg-white rounded-lg border-2 border-slate-200 overflow-hidden shadow-lg z-10">
                {cameraOn ? (
-                   <div className="w-full h-full bg-slate-100 flex items-center justify-center">
+                   <div className="w-full h-full bg-white flex items-center justify-center">
                        <span className="text-xs text-slate-400">Local Camera</span>
                    </div>
                ) : (
-                   <div className="w-full h-full flex items-center justify-center bg-slate-50 text-slate-400">
+                   <div className="w-full h-full flex items-center justify-center bg-white text-slate-400">
                        <VideoOff size={24} />
                    </div>
                )}
@@ -86,13 +86,13 @@ const VideoCall: React.FC = () => {
         <div className="bg-white p-4 flex justify-center items-center gap-6 border-t border-slate-100">
             <button 
               onClick={() => setMicOn(!micOn)} 
-              className={`p-4 rounded-full shadow-sm border border-slate-200 ${micOn ? 'bg-white hover:bg-slate-50 text-slate-700' : 'bg-red-50 text-red-600 border-red-100'}`}
+              className={`p-4 rounded-full shadow-sm border border-slate-200 ${micOn ? 'bg-white hover:bg-slate-50 text-slate-700' : 'bg-white text-red-600 border-red-200'}`}
             >
                 {micOn ? <Mic /> : <MicOff />}
             </button>
             <button 
               onClick={() => setCameraOn(!cameraOn)} 
-              className={`p-4 rounded-full shadow-sm border border-slate-200 ${cameraOn ? 'bg-white hover:bg-slate-50 text-slate-700' : 'bg-red-50 text-red-600 border-red-100'}`}
+              className={`p-4 rounded-full shadow-sm border border-slate-200 ${cameraOn ? 'bg-white hover:bg-slate-50 text-slate-700' : 'bg-white text-red-600 border-red-200'}`}
             >
                 {cameraOn ? <Video /> : <VideoOff />}
             </button>
@@ -120,7 +120,7 @@ const VideoCall: React.FC = () => {
 
       {/* Side Panel (Chat & Tools) */}
       <div className={`w-full md:w-80 bg-white border-l border-slate-200 flex flex-col ${showChat ? 'flex' : 'hidden md:flex'}`}>
-          <div className="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+          <div className="p-4 border-b border-slate-200 flex justify-between items-center bg-white">
              <h3 className="font-bold text-slate-800">Consultation Chat</h3>
              <button onClick={() => setShowChat(false)} className="md:hidden text-slate-500"><Share2 /></button>
           </div>
@@ -131,8 +131,8 @@ const VideoCall: React.FC = () => {
               </div>
               {messages.map((msg, idx) => (
                   <div key={idx} className={`flex flex-col ${msg.sender === 'Me' ? 'items-end' : 'items-start'}`}>
-                      <div className={`px-4 py-2 rounded-lg max-w-[85%] text-sm ${
-                          msg.sender === 'Me' ? 'bg-blue-600 text-white rounded-br-none' : 'bg-slate-100 text-slate-800 rounded-bl-none'
+                      <div className={`px-4 py-2 rounded-lg max-w-[85%] text-sm border ${
+                          msg.sender === 'Me' ? 'bg-blue-600 text-white border-blue-600 rounded-br-none' : 'bg-white text-slate-800 border-slate-200 rounded-bl-none'
                       }`}>
                           {msg.text}
                       </div>
@@ -143,10 +143,10 @@ const VideoCall: React.FC = () => {
 
           <div className="p-4 border-t border-slate-200">
              <div className="flex gap-2 mb-2">
-                 <button className="flex-1 py-2 bg-slate-50 border border-slate-200 text-slate-600 rounded text-xs font-medium hover:bg-slate-100 flex justify-center items-center gap-1">
+                 <button className="flex-1 py-2 bg-white border border-slate-200 text-slate-600 rounded text-xs font-medium hover:bg-slate-50 flex justify-center items-center gap-1">
                      <FileText size={14} /> Share Report
                  </button>
-                 <button className="flex-1 py-2 bg-slate-50 border border-slate-200 text-slate-600 rounded text-xs font-medium hover:bg-slate-100 flex justify-center items-center gap-1">
+                 <button className="flex-1 py-2 bg-white border border-slate-200 text-slate-600 rounded text-xs font-medium hover:bg-slate-50 flex justify-center items-center gap-1">
                     <Share2 size={14} /> Prescribe
                  </button>
              </div>
@@ -155,7 +155,7 @@ const VideoCall: React.FC = () => {
                    type="text" 
                    value={inputMsg}
                    onChange={(e) => setInputMsg(e.target.value)}
-                   className="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+                   className="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 bg-white"
                    placeholder="Type message..."
                  />
                  <button type="submit" className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">

@@ -38,6 +38,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     loadUserFromStorage();
   }, []);
 
+  // Handle Dark Mode Side Effect
+  useEffect(() => {
+    if (user?.preferences?.darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [user?.preferences?.darkMode]);
+
   const login = async (email: string, password?: string) => {
     setIsLoading(true);
     try {
@@ -87,6 +96,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     authService.logout();
     setUser(null);
     setToken(null);
+    document.documentElement.classList.remove('dark');
   };
 
   // Helper for Admin updates to reflect immediately in UI if needed (mock)

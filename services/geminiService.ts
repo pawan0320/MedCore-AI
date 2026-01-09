@@ -1,9 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 
-// API Key provided for the session
-const API_KEY = "AIzaSyByZA0NbXeGtLRhMcbntXAjI8kD50U-EHI";
-
-const ai = new GoogleGenAI({ apiKey: API_KEY });
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const analyzeSymptoms = async (symptoms: string): Promise<string> => {
   try {

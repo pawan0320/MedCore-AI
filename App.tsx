@@ -13,6 +13,11 @@ import Unauthorized from './pages/Unauthorized';
 import VideoCall from './pages/VideoCall';
 import MedicalRecords from './pages/MedicalRecords';
 import ProfileSettings from './pages/ProfileSettings';
+import DoctorSchedule from './pages/DoctorSchedule';
+import AdminDoctors from './pages/AdminDoctors';
+import AdminUsers from './pages/AdminUsers';
+import AdminAppointments from './pages/AdminAppointments';
+import AdminLogs from './pages/AdminLogs';
 import { Role } from './types';
 import { useAuth } from './context/AuthContext';
 
@@ -25,21 +30,32 @@ const AppLayout: React.FC = () => {
     <Layout userRole={user.role} onLogout={logout} user={user}>
       <Routes>
         {/* PUBLIC ACCESS FOR AUTHENTICATED USERS */}
-        <Route path="/" element={<Navigate to="/ai-assistant" />} />
+        <Route path="/" element={<Navigate to="/dashboard" />} />
         <Route path="/ai-assistant" element={<AIAssistant />} />
         
         {/* SHARED ACCESS */}
         <Route element={<ProtectedRoute allowedRoles={[Role.PATIENT, Role.DOCTOR, Role.ADMIN]} />}>
+           <Route path="/dashboard" element={<Dashboard />} />
            <Route path="/booking" element={<Booking />} />
            <Route path="/video-call/:id" element={<VideoCall />} />
            <Route path="/records" element={<MedicalRecords />} />
            <Route path="/profile" element={<ProfileSettings />} />
         </Route>
 
-        <Route element={<ProtectedRoute allowedRoles={[Role.DOCTOR, Role.ADMIN]} />}>
-           <Route path="/dashboard" element={<Dashboard />} />
+        {/* DOCTOR SPECIFIC */}
+        <Route element={<ProtectedRoute allowedRoles={[Role.DOCTOR]} />}>
+            <Route path="/schedule" element={<DoctorSchedule />} />
         </Route>
 
+        {/* ADMIN SPECIFIC */}
+        <Route element={<ProtectedRoute allowedRoles={[Role.ADMIN]} />}>
+            <Route path="/admin/doctors" element={<AdminDoctors />} />
+            <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/appointments" element={<AdminAppointments />} />
+            <Route path="/admin/logs" element={<AdminLogs />} />
+        </Route>
+
+        {/* EMERGENCY: SHARED */}
         <Route element={<ProtectedRoute allowedRoles={[Role.PATIENT, Role.ADMIN, Role.DOCTOR]} />}>
            <Route path="/emergency" element={<Emergency />} />
         </Route>

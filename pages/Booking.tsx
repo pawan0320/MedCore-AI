@@ -49,7 +49,7 @@ const Booking: React.FC = () => {
 
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                 <table className="min-w-full divide-y divide-slate-200">
-                    <thead className="bg-slate-50">
+                    <thead className="bg-white">
                         <tr>
                             <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Patient</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Time</th>
@@ -115,16 +115,16 @@ const Booking: React.FC = () => {
            <h1 className="text-2xl font-bold text-slate-800">Appointments</h1>
            <p className="text-slate-500">Book new consultations or manage existing ones</p>
         </div>
-        <div className="bg-slate-100 p-1 rounded-lg flex">
+        <div className="bg-white border border-slate-200 p-1 rounded-lg flex">
             <button 
                 onClick={() => setView('BROWSE')}
-                className={`px-4 py-2 text-sm font-medium rounded-md ${view === 'BROWSE' ? 'bg-white shadow text-blue-600' : 'text-slate-500'}`}
+                className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${view === 'BROWSE' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-500 hover:bg-slate-50'}`}
             >
                 Book New
             </button>
             <button 
                 onClick={() => setView('LIST')}
-                className={`px-4 py-2 text-sm font-medium rounded-md ${view === 'LIST' ? 'bg-white shadow text-blue-600' : 'text-slate-500'}`}
+                className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${view === 'LIST' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-500 hover:bg-slate-50'}`}
             >
                 My Appointments
             </button>
@@ -202,7 +202,7 @@ const Booking: React.FC = () => {
                         <button
                         key={slot}
                         onClick={() => handleBook(doctor.id, slot, doctor.name)}
-                        className="px-3 py-1 bg-slate-50 text-slate-700 text-xs font-medium rounded-md border border-slate-200 hover:border-blue-500 hover:text-blue-600 transition-colors"
+                        className="px-3 py-1 bg-white text-slate-700 text-xs font-medium rounded-md border border-slate-200 hover:border-blue-500 hover:text-blue-600 transition-colors"
                         >
                         {slot}
                         </button>
@@ -210,7 +210,7 @@ const Booking: React.FC = () => {
                     </div>
                 </div>
                 </div>
-                <div className="bg-slate-50 p-4 border-t border-slate-100 flex justify-between items-center">
+                <div className="bg-white p-4 border-t border-slate-100 flex justify-between items-center">
                     <span className="text-sm font-bold text-slate-700 flex items-center gap-1"><CreditCard size={14}/> $50 <span className="text-slate-400 font-normal">/ visit</span></span>
                     <button className="text-blue-600 text-sm font-semibold hover:underline">View Profile</button>
                 </div>
