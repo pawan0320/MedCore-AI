@@ -1,0 +1,9 @@
+{
+  "name": "MediCore AI - Unified Healthcare Platform",
+  "description": "A comprehensive healthcare application featuring AI-assisted diagnosis, appointment booking, telemedicine, and emergency response.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}
